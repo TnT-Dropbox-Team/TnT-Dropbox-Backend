@@ -1,28 +1,35 @@
 package com.tntteam.tntdropbox.controllers;
 
+import com.tntteam.tntdropbox.services.GroupService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/groups")
 public class GroupController {
+    private final GroupService groupService;
+
+    public GroupController(GroupService groupService) {
+        this.groupService = groupService;
+    }
+
     @GetMapping
     public String getAllGroups() {
-        return "Seznam vseh skupin";
+        return groupService.getAllGroups();
     }
     @PostMapping()
     public String createGroup() {
-        return "Ustvari novo skupino";
+        return groupService.createGroup();
     }
     @PutMapping("/{id}")
     public String updateGroup(@PathVariable long id) {
-        return "Posodobi podatke o skupini: " + id;
+        return groupService.updateGroup(id);
     }
     @DeleteMapping("/{id}")
     public String deleteGroup(@PathVariable long id) {
-        return "Izbriši skupino: " + id;
+        return groupService.deleteGroup(id);
     }
     @DeleteMapping("/{id}/leave")
     public String leaveGroup(@PathVariable long id) {
-        return "zapusti skupino: " + id;
+        return groupService.leaveGroup(id);
     }
 }

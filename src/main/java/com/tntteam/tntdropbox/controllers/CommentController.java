@@ -1,24 +1,31 @@
 package com.tntteam.tntdropbox.controllers;
 
+import com.tntteam.tntdropbox.services.CommentService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/comments")
 public class CommentController {
-    @GetMapping("group/{GrId}")
-    public String getAllComments(@PathVariable long GrId) {
-        return "Seznam vseh komentarjev v skupini: " + GrId;
+    private final CommentService commentService;
+
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
     }
-    @PostMapping("group/{GrId}")
-    public String uploadComment(@PathVariable long GrId) {
-        return "dodaj komentar v skupino: " + GrId;
+
+    @GetMapping("group/{grId}")
+    public String getAllComments(@PathVariable long grId) {
+        return commentService.getAllComments(grId);
+    }
+    @PostMapping("group/{grId}")
+    public String uploadComment(@PathVariable long grId) {
+        return commentService.uploadComment(grId);
     }
     @PutMapping("/{id}")
     public String editComment(@PathVariable long id) {
-        return "uredi komentar: " + id;
+        return commentService.editComment(id);
     }
     @DeleteMapping("/{id}")
     public String deleteComment(@PathVariable long id) {
-        return "Izbriši komentar: " + id;
+        return commentService.deleteComment(id);
     }
 }

@@ -1,21 +1,28 @@
 package com.tntteam.tntdropbox.controllers;
 
+import com.tntteam.tntdropbox.services.HistoryService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/logs")
 public class HistoryController {
+    private final HistoryService historyService;
+
+    public HistoryController(HistoryService historyService) {
+        this.historyService = historyService;
+    }
+
     @GetMapping()
     public String getAllLogs() {
-        return "Seznam vseh logov:";
+        return historyService.getAllLogs();
     }
     @GetMapping("/{id}")
     public String getLog(@PathVariable long id) {
-        return "podrobnosti loga: " + id;
+        return historyService.getLog(id);
     }
     @PostMapping()
     public String addNewLog() {
-        return "ustvari nov log";
+        return historyService.addNewLog();
     }
 }
 
