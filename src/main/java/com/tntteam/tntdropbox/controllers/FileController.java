@@ -1,7 +1,11 @@
 package com.tntteam.tntdropbox.controllers;
 
+import com.tntteam.tntdropbox.models.File;
 import com.tntteam.tntdropbox.services.FileService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/files")
@@ -13,31 +17,33 @@ public class FileController {
     }
 
     @GetMapping
-    public String getAllFiles() {
+    public List<File> getAllFiles() {
         return fileService.getAllFiles();
     }
     @GetMapping("/group/{grId}")
-    public String getAllGroupFiles(@PathVariable long grId) {
+    public List<File> getAllGroupFiles(@PathVariable long grId) {
         return fileService.getAllGroupFiles(grId);
     }
     @GetMapping("/{id}")
-    public String getFile(@PathVariable long id) {
+    public File getFile(@PathVariable long id) {
         return fileService.getFile(id);
     }
     @PostMapping()
-    public String uploadNewFile() {
-        return fileService.uploadNewFile();
+    @ResponseStatus(HttpStatus.CREATED)
+    public File uploadNewFile(@RequestBody File file) {
+        return fileService.uploadNewFile(file);
     }
     @PostMapping("/group/{grId}")
-    public String uploadGroupFile(@PathVariable long grId) {
-        return fileService.uploadGroupFile(grId);
+    @ResponseStatus(HttpStatus.CREATED)
+    public File uploadGroupFile(@PathVariable long grId, @RequestBody File file) {
+        return fileService.uploadGroupFile(grId, file);
     }
     @PutMapping("/{id}")
-    public String updateFile(@PathVariable long id) {
-        return fileService.updateFile(id);
+    public File updateFile(@PathVariable long id, @RequestBody File file) {
+        return fileService.updateFile(id, file);
     }
     @DeleteMapping("/{id}")
-    public String deleteFile(@PathVariable long id) {
-        return fileService.deleteFile(id);
+    public void deleteFile(@PathVariable long id) {
+        fileService.deleteFile(id);
     }
 }
