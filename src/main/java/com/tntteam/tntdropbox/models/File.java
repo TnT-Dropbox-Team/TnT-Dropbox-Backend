@@ -14,9 +14,10 @@ public class File {
 
     private String name;
 
-    private String data;
+    @Column(columnDefinition = "BLOB", nullable = false)
+    private byte[] fileData;
 
-    private long size;
+    private Long size;
 
     private String type;
 
@@ -52,19 +53,19 @@ public class File {
         this.name = name;
     }
 
-    public String getData() {
-        return data;
+    public byte[] getFileData() {
+        return fileData;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public void setFileData(byte[] fileData) {
+        this.fileData = fileData;
     }
 
-    public long getSize() {
+    public Long getSize() {
         return size;
     }
 
-    public void setSize(long size) {
+    public void setSize(Long size) {
         this.size = size;
     }
 

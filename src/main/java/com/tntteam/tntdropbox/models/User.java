@@ -14,6 +14,8 @@ public class User {
 
     private String username;
 
+    private Boolean admin;
+
     @JsonbTransient
     private String password;
 
@@ -22,8 +24,6 @@ public class User {
 
     @Column(name = "last_name")
     private String lastName;
-
-    private String email;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "user_notification",
@@ -69,6 +69,14 @@ public class User {
         this.username = username;
     }
 
+    public Boolean getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        this.admin = admin;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -91,14 +99,6 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public List<Notification> getNotifications() {
@@ -154,10 +154,10 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
+                ", admin=" + admin +
                 ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
                 '}';
     }
 }
