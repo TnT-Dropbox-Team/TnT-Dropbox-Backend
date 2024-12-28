@@ -16,16 +16,8 @@ public class FileController {
         this.fileService = fileService;
     }
 
-    @GetMapping
-    public List<File> getAllFiles() {
-        return fileService.getAllFiles();
-    }
-    @GetMapping("/group/{grId}")
-    public List<File> getAllGroupFiles(@PathVariable long grId) {
-        return fileService.getAllGroupFiles(grId);
-    }
     @GetMapping("/{id}")
-    public File getFile(@PathVariable long id) {
+    public File getFile(@PathVariable Long id) {
         return fileService.getFile(id);
     }
     @PostMapping()
@@ -35,15 +27,15 @@ public class FileController {
     }
     @PostMapping("/group/{grId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public File uploadGroupFile(@PathVariable long grId, @RequestBody File file) {
+    public File uploadGroupFile(@PathVariable Long grId, @RequestBody File file) {
         return fileService.uploadGroupFile(grId, file);
     }
     @PutMapping("/{id}")
-    public File updateFile(@PathVariable long id, @RequestBody File file) {
+    public File updateFile(@PathVariable Long id, @RequestBody File file) {
         return fileService.updateFile(id, file);
     }
     @DeleteMapping("/{id}")
-    public void deleteFile(@PathVariable long id) {
+    public void deleteFile(@PathVariable Long id) {
         fileService.deleteFile(id);
     }
 }

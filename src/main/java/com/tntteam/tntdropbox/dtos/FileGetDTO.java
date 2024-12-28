@@ -1,42 +1,28 @@
-package com.tntteam.tntdropbox.models;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+package com.tntteam.tntdropbox.dtos;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "files_table")
-public class File {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class FileGetDTO {
     private Long id;
 
     private String name;
-
-    @Basic(fetch = FetchType.LAZY)
-    @Column(nullable = false)
-    private byte[] fileData;
 
     private Long size;
 
     private String type;
 
-    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    @JsonIgnore
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "group_id")
-    @JsonIgnore
-    private Group group;
+    public FileGetDTO(Long id, String name, Long size, String type, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.name = name;
+        this.size = size;
+        this.type = type;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 
     public Long getId() {
         return id;
@@ -52,14 +38,6 @@ public class File {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public byte[] getFileData() {
-        return fileData;
-    }
-
-    public void setFileData(byte[] fileData) {
-        this.fileData = fileData;
     }
 
     public Long getSize() {
@@ -94,25 +72,9 @@ public class File {
         this.updatedAt = updatedAt;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Group getGroup() {
-        return group;
-    }
-
-    public void setGroup(Group group) {
-        this.group = group;
-    }
-
     @Override
     public String toString() {
-        return "File{" +
+        return "FileGetDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", size=" + size +
