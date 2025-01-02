@@ -28,11 +28,7 @@ public class User implements UserDetails {
     private String lastName;
 
     @JsonIgnore
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "user_notification",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "notification_id")
-    )
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.ALL})
     private List<Notification> notifications;
 
     @JsonIgnore

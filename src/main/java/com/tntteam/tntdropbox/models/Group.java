@@ -1,6 +1,6 @@
 package com.tntteam.tntdropbox.models;
 
-import jakarta.json.bind.annotation.JsonbTransient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -18,17 +18,20 @@ public class Group {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @JsonIgnore
     @ManyToOne()
     @JoinColumn(name = "admin_id")
     private User admin;
 
-    @JsonbTransient
+    @JsonIgnore
     @ManyToMany(mappedBy = "groups")
     private List<User> users;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     private List<File> files;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     private List<Comment> comments;
 

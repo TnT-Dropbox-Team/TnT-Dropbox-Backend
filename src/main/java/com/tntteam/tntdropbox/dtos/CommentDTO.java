@@ -1,35 +1,21 @@
-package com.tntteam.tntdropbox.models;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.json.bind.annotation.JsonbTransient;
-import jakarta.persistence.*;
+package com.tntteam.tntdropbox.dtos;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "comments_table")
-public class Comment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class CommentDTO {
     private Long id;
-
     private String text;
-
-    @Column(name = "created_at")
     private LocalDateTime createdAt;
-
-    @Column(name = "edited_at")
     private LocalDateTime editedAt;
+    private SimpleUserDTO user;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "group_id")
-    private Group group;
+    public CommentDTO(Long id, String text, LocalDateTime createdAt, LocalDateTime editedAt, SimpleUserDTO user) {
+        this.id = id;
+        this.text = text;
+        this.createdAt = createdAt;
+        this.editedAt = editedAt;
+        this.user = user;
+    }
 
     public Long getId() {
         return id;
@@ -63,25 +49,17 @@ public class Comment {
         this.editedAt = editedAt;
     }
 
-    public User getUser() {
+    public SimpleUserDTO getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(SimpleUserDTO user) {
         this.user = user;
-    }
-
-    public Group getGroup() {
-        return group;
-    }
-
-    public void setGroup(Group group) {
-        this.group = group;
     }
 
     @Override
     public String toString() {
-        return "Comment{" +
+        return "CommentDTO{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
                 ", createdAt=" + createdAt +
