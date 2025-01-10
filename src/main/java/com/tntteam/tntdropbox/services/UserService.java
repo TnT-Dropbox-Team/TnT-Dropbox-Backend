@@ -7,7 +7,6 @@ import com.tntteam.tntdropbox.exceptions.resourceNotFound.ResourceNotFoundExcept
 import com.tntteam.tntdropbox.exceptions.unauthorized.UnauthorizedException;
 import com.tntteam.tntdropbox.models.User;
 import com.tntteam.tntdropbox.repositories.UserRepository;
-import org.springframework.boot.context.config.ConfigDataException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +23,7 @@ public class UserService {
     }
 
     public String register(RegisterUserDTO user) {
-        if (userRepository.existsByUsername(user.getUsername()))
+        if (Boolean.TRUE.equals(userRepository.existsByUsername(user.getUsername())))
             throw new ConflictException("Username is already taken");
         User newUser = new User();
         newUser.setUsername(user.getUsername());

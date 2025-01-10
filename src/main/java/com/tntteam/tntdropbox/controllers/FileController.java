@@ -1,12 +1,17 @@
 package com.tntteam.tntdropbox.controllers;
 
-import com.tntteam.tntdropbox.models.File;
+import com.tntteam.tntdropbox.dtos.FileAddDTO;
+import com.tntteam.tntdropbox.dtos.FileGetDTO;
+import com.tntteam.tntdropbox.exceptions.forbidden.ForbiddenException;
+import com.tntteam.tntdropbox.models.User;
 import com.tntteam.tntdropbox.services.FileService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Profile({"file", "test"})
 @RestController
@@ -18,25 +23,59 @@ public class FileController {
         this.fileService = fileService;
     }
 
+    @SecurityRequirement(name = "TnTSecurityScheme")
+    @GetMapping("/user/{id}")
+    public Page<FileGetDTO> getUserFiles(
+            @PathVariable Long id,
+            @RequestParam(required = false) String searchQuery,
+            @RequestParam(required = false) String fileType,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt,desc") String[] sort) {
+        User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!authenticatedUser.getId().equals(id)) {
+            throw new ForbiddenException("You cannot view another user's files");
+        }
+        return fileService.getAllUserFiles(
+                id, searchQuery, fileType, page, size, sort);
+    }
+
+    @SecurityRequirement(name = "TnTSecurityScheme")
     @GetMapping("/{id}")
-    public File getFile(@PathVariable Long id) {
+    public FileGetDTO getFile(@PathVariable Long id) {
         return fileService.getFile(id);
     }
+
+    @SecurityRequirement(name = "TnTSecurityScheme")
+    @GetMapping("/group/{id}")
+    public Page<FileGetDTO> getGroupFiles(
+            @PathVariable Long id,
+            @RequestParam(required = false) String searchQuery,
+            @RequestParam(required = false) String fileType,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt,desc") String[] sort) {
+        return fileService.getAllGroupFiles(
+                id, searchQuery, fileType, page, size, sort);
+    }
+
+    @SecurityRequirement(name = "TnTSecurityScheme")
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public File uploadNewFile(@RequestBody File file) {
+    public FileGetDTO uploadNewFile(@Valid @RequestBody FileAddDTO file) {
         return fileService.uploadNewFile(file);
     }
-    @PostMapping("/group/{grId}")
+
+    @SecurityRequirement(name = "TnTSecurityScheme")
+    @PostMapping("{fileId}/groups/{groupId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public File uploadGroupFile(@PathVariable Long grId, @RequestBody File file) {
-        return fileService.uploadGroupFile(grId, file);
+    public FileGetDTO linkFileToGroup(@PathVariable Long fileId, @PathVariable Long groupId) {
+        return fileService.linkFileToGroup(fileId, groupId);
     }
-    @PutMapping("/{id}")
-    public File updateFile(@PathVariable Long id, @RequestBody File file) {
-        return fileService.updateFile(id, file);
-    }
+
+    @SecurityRequirement(name = "TnTSecurityScheme")
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteFile(@PathVariable Long id) {
         fileService.deleteFile(id);
     }
