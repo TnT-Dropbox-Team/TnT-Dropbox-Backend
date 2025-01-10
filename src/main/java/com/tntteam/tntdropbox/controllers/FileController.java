@@ -2,11 +2,13 @@ package com.tntteam.tntdropbox.controllers;
 
 import com.tntteam.tntdropbox.models.File;
 import com.tntteam.tntdropbox.services.FileService;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Profile({"file", "test"})
 @RestController
 @RequestMapping("/files")
 public class FileController {

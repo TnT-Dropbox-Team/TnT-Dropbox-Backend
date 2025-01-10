@@ -3,6 +3,7 @@ package com.tntteam.tntdropbox.config;
 import com.tntteam.tntdropbox.models.*;
 import com.tntteam.tntdropbox.repositories.*;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+@Profile("test")
 @Component
 public class DatabaseInitializer implements CommandLineRunner {
 

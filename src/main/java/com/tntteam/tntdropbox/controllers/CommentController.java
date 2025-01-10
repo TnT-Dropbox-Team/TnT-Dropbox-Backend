@@ -6,6 +6,7 @@ import com.tntteam.tntdropbox.models.User;
 import com.tntteam.tntdropbox.services.CommentService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Profile({"comment", "test"})
 @RestController
 @RequestMapping("/comments")
 public class CommentController {

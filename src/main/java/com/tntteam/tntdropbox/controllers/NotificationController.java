@@ -6,11 +6,13 @@ import com.tntteam.tntdropbox.models.User;
 import com.tntteam.tntdropbox.services.NotificationService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+@Profile({"notification", "test"})
 @RestController
 @RequestMapping("/notifications")
 public class NotificationController {

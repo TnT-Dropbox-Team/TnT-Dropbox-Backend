@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  user_service:
+    build:
+      context: ..
+      dockerfile: docker/user/Dockerfile
+    image: tcerne/tntdropbox:user_service
+    container_name: user_service_container
+    ports:
+      - "8081:8081"
+  file_service:
+    build:
+      context: ..
+      dockerfile: docker/file/Dockerfile
+    image: tcerne/tntdropbox:file_service
+    container_name: file_service_container
+    ports:
+      - "8082:8082"
+  group_service:
+    build:
+      context: ..
+      dockerfile: docker/group/Dockerfile
+    image: tcerne/tntdropbox:group_service
+    container_name: group_service_container
+    ports:
+      - "8083:8083"
+  comment_service:
+    build:
+      context: ..
+      dockerfile: docker/comment/Dockerfile
+    image: tcerne/tntdropbox:comment_service
+    container_name: comment_service_container
+    ports:
+      - "8084:8084"
+  notification_service:
+    build:
+      context: ..
+      dockerfile: docker/notification/Dockerfile
+    image: tcerne/tntdropbox:notification_service
+    container_name: notification_service_container
+    ports:
+      - "8085:8085"
+  history_service:
+    build:
+      context: ..
+      dockerfile: docker/history/Dockerfile
+    image: tcerne/tntdropbox:history_service
+    container_name: history_service_container
+    ports:
+      - "8086:8086"

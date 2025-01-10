@@ -9,11 +9,13 @@ import com.tntteam.tntdropbox.services.FileService;
 import com.tntteam.tntdropbox.services.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+@Profile({"user", "test"})
 @RestController
 @RequestMapping("/users")
 @Validated

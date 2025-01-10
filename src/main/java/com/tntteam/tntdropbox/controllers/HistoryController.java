@@ -1,8 +1,10 @@
 package com.tntteam.tntdropbox.controllers;
 
 import com.tntteam.tntdropbox.services.HistoryService;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 
+@Profile({"history", "test"})
 @RestController
 @RequestMapping("/logs")
 public class HistoryController {
