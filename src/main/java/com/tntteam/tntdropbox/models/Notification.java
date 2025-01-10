@@ -1,6 +1,6 @@
 package com.tntteam.tntdropbox.models;
 
-import jakarta.json.bind.annotation.JsonbTransient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -20,9 +20,13 @@ public class Notification {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @JsonbTransient
-    @ManyToMany(mappedBy = "notifications")
-    private List<User> users;
+    @Column(name = "viewed_at")
+    private LocalDateTime viewedAt;
+
+    @JsonIgnore
+    @ManyToOne()
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Long getId() {
         return id;
@@ -56,12 +60,20 @@ public class Notification {
         this.createdAt = createdAt;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public LocalDateTime getViewedAt() {
+        return viewedAt;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setViewedAt(LocalDateTime viewedAt) {
+        this.viewedAt = viewedAt;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
@@ -71,6 +83,7 @@ public class Notification {
                 ", title='" + title + '\'' +
                 ", body='" + body + '\'' +
                 ", createdAt=" + createdAt +
+                ", viewedAt=" + viewedAt +
                 '}';
     }
 }

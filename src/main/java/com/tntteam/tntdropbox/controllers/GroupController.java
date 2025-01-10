@@ -1,7 +1,17 @@
 package com.tntteam.tntdropbox.controllers;
 
+import com.tntteam.tntdropbox.dtos.GroupDTO;
+import com.tntteam.tntdropbox.dtos.GroupInputDTO;
+import com.tntteam.tntdropbox.dtos.SimpleUserDTO;
+import com.tntteam.tntdropbox.models.User;
 import com.tntteam.tntdropbox.services.GroupService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/groups")
@@ -12,24 +22,60 @@ public class GroupController {
         this.groupService = groupService;
     }
 
+    @SecurityRequirement(name = "TnTSecurityScheme")
     @GetMapping
-    public String getAllGroups() {
-        return groupService.getAllGroups();
+    public List<GroupDTO> getAllGroups() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return groupService.getAllGroups(user.getId());
     }
-    @PostMapping()
-    public String createGroup() {
-        return groupService.createGroup();
+
+    @SecurityRequirement(name = "TnTSecurityScheme")
+    @GetMapping("{id}")
+    public GroupDTO getGroup(@PathVariable Long id) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return groupService.getGroup(id, user.getId());
     }
+    @SecurityRequirement(name = "TnTSecurityScheme")
+    @GetMapping("{id}/members")
+    public List<SimpleUserDTO> getGroupMembers(@PathVariable Long id) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return groupService.getGroupMembers(id, user.getId());
+    }
+
+    @SecurityRequirement(name = "TnTSecurityScheme")
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public GroupDTO createGroup(@Valid @RequestBody GroupInputDTO groupInput) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return groupService.createGroup(user.getId(), groupInput);
+    }
+
+    @SecurityRequirement(name = "TnTSecurityScheme")
     @PutMapping("/{id}")
-    public String updateGroup(@PathVariable long id) {
-        return groupService.updateGroup(id);
+    public GroupDTO addGroupMember(@PathVariable long id, @Valid @RequestBody GroupInputDTO groupInput) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return groupService.updateGroup(id, user.getId(), groupInput);
     }
+
+    @SecurityRequirement(name = "TnTSecurityScheme")
+    @PutMapping("/{id}/add/{userId}")
+    public SimpleUserDTO addGroupMember(@PathVariable long id, @PathVariable long userId) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return groupService.addGroupMember(id, userId, user.getId());
+    }
+
+    @SecurityRequirement(name = "TnTSecurityScheme")
     @DeleteMapping("/{id}")
-    public String deleteGroup(@PathVariable long id) {
-        return groupService.deleteGroup(id);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteGroup(@PathVariable long id) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        groupService.deleteGroup(id, user.getId());
     }
-    @DeleteMapping("/{id}/leave")
-    public String leaveGroup(@PathVariable long id) {
-        return groupService.leaveGroup(id);
+    @SecurityRequirement(name = "TnTSecurityScheme")
+    @DeleteMapping("/{id}/remove/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeGroupMember(@PathVariable long id, @PathVariable long userId) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        groupService.removeGroupMember(id, userId, user.getId());
     }
 }
