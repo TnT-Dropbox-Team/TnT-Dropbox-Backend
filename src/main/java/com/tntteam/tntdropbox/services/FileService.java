@@ -2,6 +2,7 @@ package com.tntteam.tntdropbox.services;
 
 import com.tntteam.tntdropbox.dtos.FileAddDTO;
 import com.tntteam.tntdropbox.dtos.FileGetDTO;
+import com.tntteam.tntdropbox.dtos.FileGetDataDTO;
 import com.tntteam.tntdropbox.exceptions.forbidden.ForbiddenException;
 import com.tntteam.tntdropbox.exceptions.resourceNotFound.ResourceNotFoundException;
 import com.tntteam.tntdropbox.models.File;
@@ -33,14 +34,13 @@ public class FileService {
         this.groupRepository = groupRepository;
     }
 
-    public Page<FileGetDTO> getAllUserFiles(Long userId, String searchQuery, String fileType, int page, int size, String[] sort) {
+    public Page<FileGetDTO> getAllUserFiles(Long userId, String searchQuery, int page, int size, String[] sort) {
         if(!userRepository.existsById(userId))
             throw new ResourceNotFoundException("User with id " + userId + " not found");
 
         searchQuery = (searchQuery == null || searchQuery.trim().isEmpty()) ? "%" : "%" + searchQuery.trim() + "%";
-        fileType = (fileType == null || fileType.trim().isEmpty()) ? "%" : "%" + fileType.trim() + "%";
         Pageable pageable = buildPageable(page, size, sort);
-        Page<File> filePage = fileRepository.findByUserIdAndNameLikeAndTypeLike(userId, searchQuery, fileType, pageable);
+        Page<File> filePage = fileRepository.findByUserIdAndNameLike(userId, searchQuery, pageable);
 
         return filePage.map(file -> new FileGetDTO(
                 file.getId(),
@@ -48,7 +48,8 @@ public class FileService {
                 file.getSize(),
                 file.getType(),
                 file.getCreatedAt(),
-                file.getUpdatedAt()
+                file.getUpdatedAt(),
+                file.getGroup() != null
         ));
     }
 
@@ -68,7 +69,7 @@ public class FileService {
     }
 
     public Page<FileGetDTO> getAllGroupFiles(Long groupId, String searchQuery,
-                                       String fileType, int page, int size, String[] sort) {
+                                             int page, int size, String[] sort) {
         User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if(!groupRepository.existsById(groupId))
@@ -80,9 +81,8 @@ public class FileService {
         }
 
         searchQuery = (searchQuery == null || searchQuery.trim().isEmpty()) ? "%" : "%" + searchQuery.trim() + "%";
-        fileType = (fileType == null || fileType.trim().isEmpty()) ? "%" : "%" + fileType.trim() + "%";
         Pageable pageable = buildPageable(page, size, sort);
-        Page<File> filePage = fileRepository.findByGroupIdAndNameLikeAndTypeLike(groupId, searchQuery, fileType, pageable);
+        Page<File> filePage = fileRepository.findByGroupIdAndNameLike(groupId, searchQuery, pageable);
 
         return filePage.map(file -> new FileGetDTO(
                 file.getId(),
@@ -90,10 +90,11 @@ public class FileService {
                 file.getSize(),
                 file.getType(),
                 file.getCreatedAt(),
-                file.getUpdatedAt()
+                file.getUpdatedAt(),
+                file.getGroup() != null
         ));
     }
-    public FileGetDTO getFile(long id) {
+    public FileGetDataDTO getFile(long id) {
         User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         File file = fileRepository.findById(id).orElseThrow(
@@ -106,13 +107,7 @@ public class FileService {
                 throw new ForbiddenException("You are not authorized to access this file");
         }
 
-        return new FileGetDTO(
-                file.getId(),
-                file.getName(),
-                file.getSize(),
-                file.getType(),
-                file.getCreatedAt(),
-                file.getUpdatedAt());
+        return new FileGetDataDTO(file.getFileData());
     }
 
     public FileGetDTO uploadNewFile(FileAddDTO fileAddDTO) {
@@ -135,7 +130,8 @@ public class FileService {
                 savedFile.getSize(),
                 savedFile.getType(),
                 savedFile.getCreatedAt(),
-                savedFile.getUpdatedAt()
+                savedFile.getUpdatedAt(),
+                false
         );
     }
 
@@ -182,7 +178,8 @@ public class FileService {
                 updatedFile.getSize(),
                 updatedFile.getType(),
                 updatedFile.getCreatedAt(),
-                updatedFile.getUpdatedAt()
+                updatedFile.getUpdatedAt(),
+                true
         );
     }
 

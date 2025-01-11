@@ -15,13 +15,16 @@ public class FileGetDTO {
 
     private LocalDateTime updatedAt;
 
-    public FileGetDTO(Long id, String name, Long size, String type, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    private boolean isInGroup;
+
+    public FileGetDTO(Long id, String name, Long size, String type, LocalDateTime createdAt, LocalDateTime updatedAt, boolean isInGroup) {
         this.id = id;
         this.name = name;
         this.size = size;
         this.type = type;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.isInGroup = isInGroup;
     }
 
     public Long getId() {
@@ -72,6 +75,14 @@ public class FileGetDTO {
         this.updatedAt = updatedAt;
     }
 
+    public boolean isInGroup() {
+        return isInGroup;
+    }
+
+    public void setInGroup(boolean inGroup) {
+        isInGroup = inGroup;
+    }
+
     @Override
     public String toString() {
         return "FileGetDTO{" +
@@ -81,6 +92,7 @@ public class FileGetDTO {
                 ", type='" + type + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
+                ", isInGroup=" + isInGroup +
                 '}';
     }
 }

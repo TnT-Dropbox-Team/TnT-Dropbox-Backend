@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FileRepository extends JpaRepository<File, Long> {
-    Page<File> findByUserIdAndNameLikeAndTypeLike(Long userId, String name, String type, Pageable pageable);
-    Page<File> findByGroupIdAndNameLikeAndTypeLike(Long groupId, String name, String type, Pageable pageable);
+    Page<File> findByUserIdAndNameLike(Long userId, String name, Pageable pageable);
+    Page<File> findByGroupIdAndNameLike(Long groupId, String name, Pageable pageable);
 }
