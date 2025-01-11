@@ -7,26 +7,29 @@ obvestila, sledenje aktivnosti, plačilne sisteme in sodelovanje, kar uporabniko
 - **User Service:**
     - `GET /users` – Vrne seznam vseh uporabniških profilov. (samo admin)
     - `GET /users/{id}` – Vrne podatke o določenem uporabniku glede na ID.
-    - `POST /users` – Ustvari nov uporabniški profil (registracija).
+    - `POST /users/register` – Ustvari nov uporabniški profil (registracija).
     - `POST /users/login` – Prijava uporabnika v sistem.
     - `PUT /users/{id}` – Posodobi podatke obstoječega uporabnika glede na ID. (sprememba gesla, ...)
     - `DELETE /users/{id}` – Izbriše uporabniški profil na podlagi ID-ja.
   
 - **File Service:**
-    - `GET /files` – Vrne seznam vseh datotek (prijavljenega uporabnika).
+    - `GET /files/user/{userId}` – Vrne seznam vseh datotek (prijavljenega uporabnika).
     - `GET /files/group/{GrId}` – Vrne seznam vseh datotek določene skupine uporabnikov.
     - `GET /files/{id}` – Vrne datoteko glede na ID.
     - `POST /files` – Shrani novo datoteko.
-    - `POST /files/group/{GrId}` – Shrani datoteko v določeno skupino.
+    - `POST /files/{fileId}/groups/{GrId}` – Shrani datoteko v določeno skupino.
     - `PUT /files/{id}` – Posodobi datoteko.
     - `DELETE /files/{id}` – Izbriši datoteko.
   
 - **Group Service:**
     - `GET /groups` – Vrne seznam vseh skupin (prijavljenega uporabnika).
+    - `GET /groups/{id}` – Vrne podatke o posamezni skupini.
+    - `GET /groups/{id}/members` – Vrne člane posamezne skupine.
     - `POST /groups` – Ustvari skupino.
     - `PUT /groups/{id}` – Posodobi podatke o skupini.
+    - `PUT /groups/{id}/add/{userId}` – doda novega uporabnika v skupino.
     - `DELETE /groups/{id}` – Izbriši skupino.
-    - `DELETE /groups/{id}/leave` – Zapusti skupino.
+    - `DELETE /groups/{id}/remove/{id}` – odstrani uporabnika iz skupine.
   
 - **Comment Service:**
     - `GET /comments/group/{GrId}` – Vrne seznam komentarjev določene skupine.
@@ -37,14 +40,14 @@ obvestila, sledenje aktivnosti, plačilne sisteme in sodelovanje, kar uporabniko
 - **Notification Service:**
     - `GET /notifications` – Vrne seznam obvestil (prijavljenega uporabnika).
     - `GET /notifications/{id}` – Vrne vsebino obvestila.
-    - `POST /notifications` – Pošlji obvestilo vsem uporabnikom (samo admin / mikrostoritev).
     - `POST /notifications/{UserID}` – Pošlji obvestilo določenemu uporabniku (admin / mikrostoritev).
     - `DELETE /notifications` – Izbriši vsa prejeta obvestila uporabnika.
     - `DELETE /notifications/{id}` – Izbriši določeno obvestilo.
   
 - **History Service:**
-    - `GET /logs` – Vrne seznam zapisov dogodkov.
+    - `GET /logs/user/{id}` – Vrne seznam zapisov dogodkov določenega uporabnika.
     - `GET /logs/{id}` – Podrobnosti posameznega zapisa.
     - `POST /logs` – Ustvari nov zapis.
-  
-- **Payment Service** (morda kakšen zunanji API):
+
+## Načrt baze podatkov
+![Načrt baze podatkov](assets/ER.png "Načrt baze podatkov")
