@@ -51,3 +51,64 @@ obvestila, sledenje aktivnosti, plačilne sisteme in sodelovanje, kar uporabniko
 
 ## Načrt baze podatkov
 ![Načrt baze podatkov](assets/ER.png "Načrt baze podatkov")
+
+## Navodila za zagon
+### Lokalno
+Zaženete lahko posamezne mikrostoritve tako da izberete ustrezen profil:
+- Mikrostoritev **user** se zažene na portu **8081**:
+    ```cmd
+    mvn spring-boot:run "-Dspring-boot.run.profiles=user"
+    ```
+- Mikrostoritev **file** se zažene na portu **8082**:
+    ```cmd
+    mvn spring-boot:run "-Dspring-boot.run.profiles=file"
+    ```
+- Mikrostoritev **group** se zažene na portu **8083**:
+    ```cmd
+    mvn spring-boot:run "-Dspring-boot.run.profiles=group"
+    ```
+- Mikrostoritev **comment** se zažene na portu **8084**:
+    ```cmd
+    mvn spring-boot:run "-Dspring-boot.run.profiles=comment"
+    ```
+- Mikrostoritev **notification** se zažene na portu **8085**:
+    ```cmd
+    mvn spring-boot:run "-Dspring-boot.run.profiles=notification"
+    ```
+- Mikrostoritev **history** se zažene na portu **8086**:
+    ```cmd
+    mvn spring-boot:run "-Dspring-boot.run.profiles=history"
+    ```
+Testno lahko zaženete tudi vse storitve skupaj:
+- Testna verzija teče na portu **3000**:
+    ```cmd
+    mvn spring-boot:run "-Dspring-boot.run.profiles=test"
+    ```
+
+### Docker
+Najprej v korenski mapi poženite naslednji ukaz:
+```cmd
+mvn clean install
+```
+Nato se premaknite v mapo docker
+```cmd
+cd docker
+```
+Po želji lahko ročno zgradite in zaženete docker slike ločeno za vsako storitev posebaj:
+- **user**
+    ```cmd
+    docker build -t user_service -f user/Dockerfile ..
+    docker run -d --name user_service_container -p 8081:8081 user_service
+    ```
+- **file**
+    ```cmd
+    docker build -t file_service -f file/Dockerfile ..
+    docker run -d --name file_service_container -p 8082:8082 file_service
+    ```
+- ... podobno tudi za ostale storitve oz. docker datoteke
+
+Enostavno lahko zgradite in poženete vse docker slike naenkrat z ukazom:
+```cmd
+docker compose up --build
+```
+Vse docker slike so dostopne tudi v Docker-Hub [repozitoriju](https://hub.docker.com/repository/docker/tcerne/tntdropbox)
