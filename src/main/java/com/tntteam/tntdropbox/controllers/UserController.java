@@ -1,9 +1,11 @@
 package com.tntteam.tntdropbox.controllers;
 
+import com.tntteam.tntdropbox.dtos.JwtDTO;
 import com.tntteam.tntdropbox.dtos.LoginUserDTO;
 import com.tntteam.tntdropbox.dtos.RegisterUserDTO;
 import com.tntteam.tntdropbox.exceptions.forbidden.ForbiddenException;
 import com.tntteam.tntdropbox.models.User;
+import com.tntteam.tntdropbox.services.JwtService;
 import com.tntteam.tntdropbox.services.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -25,11 +27,11 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String register(@Valid @RequestBody RegisterUserDTO user) {
+    public JwtDTO register(@Valid @RequestBody RegisterUserDTO user) {
         return userService.register(user);
     }
     @PostMapping("/login")
-    public String login(@RequestBody LoginUserDTO user) {
+    public JwtDTO login(@RequestBody LoginUserDTO user) {
         return userService.login(user);
     }
     @SecurityRequirement(name = "TnTSecurityScheme")

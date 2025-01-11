@@ -1,5 +1,6 @@
 package com.tntteam.tntdropbox.services;
 
+import com.tntteam.tntdropbox.dtos.JwtDTO;
 import com.tntteam.tntdropbox.dtos.LoginUserDTO;
 import com.tntteam.tntdropbox.dtos.RegisterUserDTO;
 import com.tntteam.tntdropbox.exceptions.conflict.ConflictException;
@@ -22,7 +23,7 @@ public class UserService {
         this.jwtService = jwtService;
     }
 
-    public String register(RegisterUserDTO user) {
+    public JwtDTO register(RegisterUserDTO user) {
         if (Boolean.TRUE.equals(userRepository.existsByUsername(user.getUsername())))
             throw new ConflictException("Username is already taken");
         User newUser = new User();
@@ -31,15 +32,15 @@ public class UserService {
         newUser.setFirstName(user.getFirstName());
         newUser.setLastName(user.getLastName());
         userRepository.save(newUser);
-        return jwtService.generateToken(newUser);
+        return new JwtDTO(jwtService.generateToken(newUser));
     }
-    public String login(LoginUserDTO loginUserDTO) {
+    public JwtDTO login(LoginUserDTO loginUserDTO) {
         User user = userRepository.findByUsername(loginUserDTO.getUsername())
                 .orElseThrow(() -> new UnauthorizedException("Invalid username or password"));
         if (!passwordEncoder.matches(loginUserDTO.getPassword(), user.getPassword())) {
             throw new UnauthorizedException("Invalid username or password");
         }
-        return jwtService.generateToken(user);
+        return new JwtDTO(jwtService.generateToken(user));
     }
     public void deleteUserProfile(Long id) {
         if (!userRepository.existsById(id))
