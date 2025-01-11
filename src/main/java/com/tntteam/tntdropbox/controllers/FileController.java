@@ -2,6 +2,7 @@ package com.tntteam.tntdropbox.controllers;
 
 import com.tntteam.tntdropbox.dtos.FileAddDTO;
 import com.tntteam.tntdropbox.dtos.FileGetDTO;
+import com.tntteam.tntdropbox.dtos.FileGetDataDTO;
 import com.tntteam.tntdropbox.exceptions.forbidden.ForbiddenException;
 import com.tntteam.tntdropbox.models.User;
 import com.tntteam.tntdropbox.services.FileService;
@@ -28,7 +29,6 @@ public class FileController {
     public Page<FileGetDTO> getUserFiles(
             @PathVariable Long id,
             @RequestParam(required = false) String searchQuery,
-            @RequestParam(required = false) String fileType,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt,desc") String[] sort) {
@@ -37,12 +37,12 @@ public class FileController {
             throw new ForbiddenException("You cannot view another user's files");
         }
         return fileService.getAllUserFiles(
-                id, searchQuery, fileType, page, size, sort);
+                id, searchQuery, page, size, sort);
     }
 
     @SecurityRequirement(name = "TnTSecurityScheme")
     @GetMapping("/{id}")
-    public FileGetDTO getFile(@PathVariable Long id) {
+    public FileGetDataDTO getFile(@PathVariable Long id) {
         return fileService.getFile(id);
     }
 
@@ -51,12 +51,11 @@ public class FileController {
     public Page<FileGetDTO> getGroupFiles(
             @PathVariable Long id,
             @RequestParam(required = false) String searchQuery,
-            @RequestParam(required = false) String fileType,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt,desc") String[] sort) {
         return fileService.getAllGroupFiles(
-                id, searchQuery, fileType, page, size, sort);
+                id, searchQuery, page, size, sort);
     }
 
     @SecurityRequirement(name = "TnTSecurityScheme")
