@@ -52,8 +52,15 @@ public class User implements UserDetails {
     private List<Comment> comments;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private List<History> history;
+
+    @PreRemove
+    private void preRemove() {
+        for (Comment comment : comments) {
+            comment.setUser(null);
+        }
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

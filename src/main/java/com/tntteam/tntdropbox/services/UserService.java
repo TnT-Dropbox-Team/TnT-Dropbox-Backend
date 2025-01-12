@@ -4,8 +4,9 @@ import com.tntteam.tntdropbox.dtos.*;
 import com.tntteam.tntdropbox.exceptions.conflict.ConflictException;
 import com.tntteam.tntdropbox.exceptions.resourceNotFound.ResourceNotFoundException;
 import com.tntteam.tntdropbox.exceptions.unauthorized.UnauthorizedException;
-import com.tntteam.tntdropbox.models.File;
+import com.tntteam.tntdropbox.models.Group;
 import com.tntteam.tntdropbox.models.User;
+import com.tntteam.tntdropbox.repositories.GroupRepository;
 import com.tntteam.tntdropbox.repositories.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +22,13 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final GroupRepository groupRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public UserService(UserRepository userRepository, GroupRepository groupRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
+        this.groupRepository = groupRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
     }
@@ -57,6 +61,7 @@ public class UserService {
         userRepository.save(newUser);
         return new JwtDTO(jwtService.generateToken(newUser));
     }
+
     public JwtDTO login(LoginUserDTO loginUserDTO) {
         User user = userRepository.findByUsername(loginUserDTO.getUsername())
                 .orElseThrow(() -> new UnauthorizedException("Invalid username or password"));
@@ -65,9 +70,31 @@ public class UserService {
         }
         return new JwtDTO(jwtService.generateToken(user));
     }
+
+    @Transactional
     public void deleteUserProfile(Long id) {
-        if (!userRepository.existsById(id))
-            throw new ResourceNotFoundException("User with id " + id + " not found");
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("User with id " + id + " not found"));
+
+        for (Group group : user.getGroups()) {
+            group.getUsers().remove(user);
+        }
+        user.getGroups().clear();
+
+        for (Group group : user.getAdminGroups()) {
+            group.getUsers().remove(user);
+
+            if (!group.getUsers().isEmpty()) {
+                User newAdmin = group.getUsers().get(0);
+                group.setAdmin(newAdmin);
+                groupRepository.save(group);
+            } else {
+                groupRepository.delete(group);
+            }
+        }
+
+        user.getAdminGroups().clear();
+
         userRepository.deleteById(id);
     }
 }
