@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-@Profile("test")
+@Profile({"test", "user"})
 @Component
 public class DatabaseInitializer implements CommandLineRunner {
 
