@@ -3,6 +3,7 @@ package com.tntteam.tntdropbox.controllers;
 import com.tntteam.tntdropbox.dtos.JwtDTO;
 import com.tntteam.tntdropbox.dtos.LoginUserDTO;
 import com.tntteam.tntdropbox.dtos.RegisterUserDTO;
+import com.tntteam.tntdropbox.dtos.SimpleUserDTO;
 import com.tntteam.tntdropbox.exceptions.forbidden.ForbiddenException;
 import com.tntteam.tntdropbox.models.User;
 import com.tntteam.tntdropbox.services.JwtService;
@@ -10,6 +11,7 @@ import com.tntteam.tntdropbox.services.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
@@ -26,14 +28,25 @@ public class UserController {
         this.userService = userService;
     }
 
+    @SecurityRequirement(name = "TnTSecurityScheme")
+    @GetMapping()
+    public Page<SimpleUserDTO> getAllUsers(
+            @RequestParam(required = false) String searchQuery,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return userService.getAllUsers(searchQuery, page, size);
+    }
+
     @PostMapping("/register")
     public JwtDTO register(@Valid @RequestBody RegisterUserDTO user) {
         return userService.register(user);
     }
+
     @PostMapping("/login")
     public JwtDTO login(@RequestBody LoginUserDTO user) {
         return userService.login(user);
     }
+
     @SecurityRequirement(name = "TnTSecurityScheme")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
