@@ -42,8 +42,7 @@ public class NotificationController {
         return notificationService.viewNotification(id, user.getId());
     }
 
-    @SecurityRequirement(name = "TnTSecurityScheme")
-    @PostMapping("/{userId}")
+    @PostMapping("/to/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
     public Notification sendNotification(@PathVariable long userId, @Valid @RequestBody NotificationInputDTO notificationInput) {
         return notificationService.sendNotification(userId, notificationInput);

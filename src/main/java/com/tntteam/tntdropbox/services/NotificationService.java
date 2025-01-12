@@ -40,8 +40,8 @@ public class NotificationService {
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        return notificationRepository.findByUserIdAndBodyContainingIgnoreCaseOrTitleContainingIgnoreCase(
-                userId, query, query, pageable
+        return notificationRepository.findByUserIdAndBodyContainingIgnoreCase(
+                userId, query, pageable
         );
     }
     public Notification viewNotification(long notificationId, long userId) {

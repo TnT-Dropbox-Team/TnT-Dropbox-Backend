@@ -24,7 +24,8 @@ public class SecurityConfiguration {
             "/users/register",
             "/swagger-ui/**",
             "/v3/api-docs/**",
-            "/swagger-ui/index.html"
+            "/swagger-ui/index.html",
+            "/notifications/to/**"
     };
 
     public SecurityConfiguration(

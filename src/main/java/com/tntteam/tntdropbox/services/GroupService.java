@@ -2,15 +2,19 @@ package com.tntteam.tntdropbox.services;
 
 import com.tntteam.tntdropbox.dtos.GroupDTO;
 import com.tntteam.tntdropbox.dtos.GroupInputDTO;
+import com.tntteam.tntdropbox.dtos.NotificationInputDTO;
 import com.tntteam.tntdropbox.dtos.SimpleUserDTO;
 import com.tntteam.tntdropbox.exceptions.conflict.ConflictException;
 import com.tntteam.tntdropbox.exceptions.forbidden.ForbiddenException;
 import com.tntteam.tntdropbox.exceptions.resourceNotFound.ResourceNotFoundException;
 import com.tntteam.tntdropbox.models.Group;
+import com.tntteam.tntdropbox.models.Notification;
 import com.tntteam.tntdropbox.models.User;
 import com.tntteam.tntdropbox.repositories.GroupRepository;
 import com.tntteam.tntdropbox.repositories.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,10 +25,13 @@ public class GroupService {
 
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
+    private final WebClient webClient;
+    private String notificationServiceUrl = "http://localhost:8085/notifications";
 
-    public GroupService(GroupRepository groupRepository, UserRepository userRepository) {
+    public GroupService(GroupRepository groupRepository, UserRepository userRepository, WebClient webClient) {
         this.groupRepository = groupRepository;
         this.userRepository = userRepository;
+        this.webClient = webClient;
     }
 
     public List<GroupDTO> getAllGroups(long userId) {
@@ -153,6 +160,12 @@ public class GroupService {
         member.getGroups().add(group);
         userRepository.save(member);
 
+        sendNotification(
+                memberId,
+                "Welocome to the group",
+                "You have been added to the group: " + group.getName()
+        );
+
         return new SimpleUserDTO(member.getId(), member.getUsername(),
                 member.getFirstName(), member.getLastName());
 
@@ -194,5 +207,17 @@ public class GroupService {
         groupRepository.save(group);
         member.getGroups().remove(group);
         userRepository.save(member);
+    }
+
+    public void sendNotification(long userId, String title, String message) {
+        NotificationInputDTO notificationInput = new NotificationInputDTO(title, message);
+        String url = this.notificationServiceUrl + "/to/" + userId;
+        webClient.post()
+                .uri(url)
+                .bodyValue(notificationInput)
+                .retrieve()
+                .bodyToMono(Notification.class)
+                .doOnTerminate(() -> System.out.println("Notification sent"))
+                .subscribe();
     }
 }

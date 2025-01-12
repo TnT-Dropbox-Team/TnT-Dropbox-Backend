@@ -12,10 +12,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
-    Page<Notification> findByUserIdAndBodyContainingIgnoreCaseOrTitleContainingIgnoreCase(
+    Page<Notification> findByUserIdAndBodyContainingIgnoreCase(
             Long userId,
-            String bodyQuery,
-            String titleQuery,
+            String query,
             Pageable pageable
     );
 
