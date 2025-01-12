@@ -5,7 +5,7 @@ Projekt TnT Dropbox je zasnovan za reševanje težav pri varnem in učinkovitem 
 
 ## Načrt mikrostoritev in REST API končnih točk
 - **User Service:**
-    - `GET /users` – Vrne seznam vseh uporabniških profilov. (samo admin)
+    - `GET /users` – Vrne seznam vseh uporabniških profilov.
     - `GET /users/{id}` – Vrne podatke o določenem uporabniku glede na ID.
     - `POST /users/register` – Ustvari nov uporabniški profil (registracija).
     - `POST /users/login` – Prijava uporabnika v sistem.
@@ -40,7 +40,7 @@ Projekt TnT Dropbox je zasnovan za reševanje težav pri varnem in učinkovitem 
 - **Notification Service:**
     - `GET /notifications` – Vrne seznam obvestil (prijavljenega uporabnika).
     - `GET /notifications/{id}` – Vrne vsebino obvestila.
-    - `POST /notifications/{UserID}` – Pošlji obvestilo določenemu uporabniku (admin / mikrostoritev).
+    - `POST /notifications/to/{UserID}` – Pošlji obvestilo določenemu uporabniku (admin / mikrostoritev).
     - `DELETE /notifications` – Izbriši vsa prejeta obvestila uporabnika.
     - `DELETE /notifications/{id}` – Izbriši določeno obvestilo.
   
