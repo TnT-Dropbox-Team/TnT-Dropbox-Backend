@@ -3,6 +3,7 @@ package com.tntteam.tntdropbox.controllers;
 import com.tntteam.tntdropbox.dtos.FileAddDTO;
 import com.tntteam.tntdropbox.dtos.FileGetDTO;
 import com.tntteam.tntdropbox.dtos.FileGetDataDTO;
+import com.tntteam.tntdropbox.exceptions.badRequest.BadRequest;
 import com.tntteam.tntdropbox.exceptions.forbidden.ForbiddenException;
 import com.tntteam.tntdropbox.models.User;
 import com.tntteam.tntdropbox.services.FileService;
@@ -11,8 +12,12 @@ import jakarta.validation.Valid;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Profile({"file", "test"})
 @RestController
@@ -59,10 +64,25 @@ public class FileController {
     }
 
     @SecurityRequirement(name = "TnTSecurityScheme")
-    @PostMapping()
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public FileGetDTO uploadNewFile(@Valid @RequestBody FileAddDTO file) {
-        return fileService.uploadNewFile(file);
+    public FileGetDTO uploadNewFile(
+            @RequestParam("file") MultipartFile file
+    ) {
+        try {
+            String name = file.getOriginalFilename();
+
+            if (name == null || name.trim().isEmpty()) {
+                throw new BadRequest("File name is missing!");
+            }
+
+            byte[] fileData = file.getBytes();
+            FileAddDTO fileAddDTO = new FileAddDTO(name, fileData);
+
+            return fileService.uploadNewFile(fileAddDTO);
+        } catch (IOException e) {
+            throw new BadRequest("Invalid file data!");
+        }
     }
 
     @SecurityRequirement(name = "TnTSecurityScheme")

@@ -9,12 +9,11 @@ public class FileAddDTO {
     private String name;
 
     @NotNull(message = "File data can not be null")
-    @NotEmpty(message = "File data can not be empty")
-    private String data;
+    private byte[] data;
 
     public FileAddDTO() {}
 
-    public FileAddDTO(String name, String data) {
+    public FileAddDTO(String name, byte[] data) {
         this.name = name;
         this.data = data;
     }
@@ -23,7 +22,7 @@ public class FileAddDTO {
         return name;
     }
 
-    public String getData() {
+    public byte[] getData() {
         return data;
     }
 
@@ -31,7 +30,7 @@ public class FileAddDTO {
         this.name = name;
     }
 
-    public void setData(String data) {
+    public void setData(byte[] data) {
         this.data = data;
     }
 

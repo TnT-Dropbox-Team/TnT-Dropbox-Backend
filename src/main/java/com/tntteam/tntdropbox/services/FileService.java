@@ -3,6 +3,7 @@ package com.tntteam.tntdropbox.services;
 import com.tntteam.tntdropbox.dtos.FileAddDTO;
 import com.tntteam.tntdropbox.dtos.FileGetDTO;
 import com.tntteam.tntdropbox.dtos.FileGetDataDTO;
+import com.tntteam.tntdropbox.exceptions.conflict.ConflictException;
 import com.tntteam.tntdropbox.exceptions.forbidden.ForbiddenException;
 import com.tntteam.tntdropbox.exceptions.resourceNotFound.ResourceNotFoundException;
 import com.tntteam.tntdropbox.models.File;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FileService {
@@ -113,10 +115,15 @@ public class FileService {
     public FileGetDTO uploadNewFile(FileAddDTO fileAddDTO) {
         User authenticatedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
+        Optional<File> existingFile = fileRepository.findByNameAndUser(fileAddDTO.getName(), authenticatedUser);
+        if (existingFile.isPresent()) {
+            throw new ConflictException("A file with the name " + fileAddDTO.getName() + " already exists.");
+        }
+
         File file = new File();
         file.setName(fileAddDTO.getName());
-        file.setFileData(fileAddDTO.getData().getBytes());
-        file.setSize((long) fileAddDTO.getData().getBytes().length);
+        file.setFileData(fileAddDTO.getData());
+        file.setSize((long) fileAddDTO.getData().length);
         file.setType(detectFileType(fileAddDTO.getName()));
         file.setCreatedAt(LocalDateTime.now());
         file.setUpdatedAt(LocalDateTime.now());

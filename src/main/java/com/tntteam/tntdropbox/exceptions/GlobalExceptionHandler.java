@@ -1,5 +1,6 @@
 package com.tntteam.tntdropbox.exceptions;
 
+import com.tntteam.tntdropbox.exceptions.badRequest.BadRequest;
 import com.tntteam.tntdropbox.exceptions.conflict.ConflictException;
 import com.tntteam.tntdropbox.exceptions.forbidden.ForbiddenException;
 import com.tntteam.tntdropbox.exceptions.resourceNotFound.ResourceNotFoundException;
@@ -52,6 +53,19 @@ public class GlobalExceptionHandler {
                 path
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BadRequest.class)
+    public ResponseEntity<Object> handleBadRequestException(BadRequest ex, WebRequest request) {
+        String path = ((ServletWebRequest) request).getRequest().getRequestURI();
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                ZonedDateTime.now(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                path
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UnauthorizedException.class)
