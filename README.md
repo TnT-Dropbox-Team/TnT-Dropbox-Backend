@@ -1,8 +1,8 @@
 # TnT Dropbox
-Projekt TnT Dropbox je zasnovan za reševanje težav pri varnem in učinkovitem shranjevanju, deljenju in upravljanju datotek v digitalnem okolju. 
-Uporabniki pogosto potrebujejo platformo, ki omogoča preprosto sodelovanje, sledenje različicam in nadzor nad dostopom do datotek, hkrati pa zagotavlja varnost in enostaven dostop kjerkoli in kadarkoli.
-Naša rešitev ponuja robustno aplikacijo, ki temelji na mikrostoritvah, z naprednimi funkcijami za shranjevanje ter upravljanje datotek, 
-obvestila, sledenje aktivnosti, plačilne sisteme in sodelovanje, kar uporabnikom omogoča nemoteno upravljanje podatkov in učinkovito sodelovanje.
+Projekt TnT Dropbox je zasnovan za reševanje težav pri varnem in učinkovitem shranjevanju, deljenju in upravljanju datotek v digitalnem okolju. Uporabniki pogosto potrebujejo platformo, ki omogoča preprosto sodelovanje, sledenje in nadzor nad dostopom do datotek, hkrati pa zagotavlja varnost in enostaven dostop kjerkoli in kadarkoli. Naša rešitev ponuja robustno aplikacijo, ki temelji na mikrostoritvah, s funkcijami za shranjevanje ter upravljanje datotek, obvestila, sledenje aktivnosti in sodelovanje.
+## Shema arhitekture
+<img src="assets/shema.drawio.png" alt="Shema arhitekture" width="900"/>
+
 ## Načrt mikrostoritev in REST API končnih točk
 - **User Service:**
     - `GET /users` – Vrne seznam vseh uporabniških profilov. (samo admin)
