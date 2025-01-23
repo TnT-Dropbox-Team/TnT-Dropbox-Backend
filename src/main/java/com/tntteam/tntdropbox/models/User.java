@@ -27,6 +27,8 @@ public class User implements UserDetails {
     @Column(name = "last_name", length = 100)
     private String lastName;
 
+    private String email;
+
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = {CascadeType.ALL})
     private List<Notification> notifications;
@@ -177,6 +179,14 @@ public class User implements UserDetails {
         this.history = history;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -185,6 +195,7 @@ public class User implements UserDetails {
                 ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }

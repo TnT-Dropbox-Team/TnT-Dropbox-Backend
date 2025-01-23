@@ -26,12 +26,14 @@ public class GroupService {
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
     private final WebClient webClient;
-    private String notificationServiceUrl = "http://localhost:8085/notifications";
+    private final EmailService emailService;
+    private final String notificationServiceUrl = "http://localhost:8085/notifications";
 
-    public GroupService(GroupRepository groupRepository, UserRepository userRepository, WebClient webClient) {
+    public GroupService(GroupRepository groupRepository, UserRepository userRepository, WebClient webClient, EmailService emailService) {
         this.groupRepository = groupRepository;
         this.userRepository = userRepository;
         this.webClient = webClient;
+        this.emailService = emailService;
     }
 
     public List<GroupDTO> getAllGroups(long userId) {
@@ -165,6 +167,13 @@ public class GroupService {
                 "Welocome to the group",
                 "You have been added to the group: " + group.getName()
         );
+        if (member.getEmail() != null) {
+            emailService.sendEmail(
+                    member.getEmail(),
+                    "Welocome to the group",
+                    "You have been added to the group: " + group.getName()
+            );
+        }
 
         return new SimpleUserDTO(member.getId(), member.getUsername(),
                 member.getFirstName(), member.getLastName());

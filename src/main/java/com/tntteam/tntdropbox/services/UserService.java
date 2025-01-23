@@ -25,12 +25,14 @@ public class UserService {
     private final GroupRepository groupRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final EmailService emailService;
 
-    public UserService(UserRepository userRepository, GroupRepository groupRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public UserService(UserRepository userRepository, GroupRepository groupRepository, PasswordEncoder passwordEncoder, JwtService jwtService, EmailService emailService) {
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.emailService = emailService;
     }
 
     public Page<SimpleUserDTO> getAllUsers(String searchQuery, int page, int size) {
@@ -58,7 +60,15 @@ public class UserService {
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
         newUser.setFirstName(user.getFirstName());
         newUser.setLastName(user.getLastName());
+        newUser.setEmail(user.getEmail());
         userRepository.save(newUser);
+        if (user.getEmail() != null) {
+            emailService.sendEmail(
+                    user.getEmail(),
+                    "Registration successful",
+                    user.getFirstName() + ", Welcome to TnT Dropbox. Your registration was successful. Thank you for joining us!"
+            );
+        }
         return new JwtDTO(jwtService.generateToken(newUser));
     }
 
